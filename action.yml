@@ -1,0 +1,67 @@
+name: 'Run phpcs with reviewdog'
+description: 'Run phpcs with reviewdog 🐶 on pull requests.'
+author: 'Santiago Cerro López'
+inputs:
+  github_token:
+    description: 'Your Github token.'
+    required: true
+    default: ${{ github.token }}
+  level:
+    description: 'Report level for reviewdog'
+    required: false
+    options:
+      - info
+      - warning
+      - error
+    default: 'error'
+  reporter:
+    description: |
+      Reporter of reviewdog command. Default is `github-pr-review`.
+    required: false
+    options:
+      - github-check
+      - github-pr-review
+    default: 'github-pr-review'
+  filter_mode:
+    description: |
+      Filtering mode for the reviewdog command. Default is added.
+    required: false
+    options:
+      - added
+      - diff_context
+      - file
+      - nofilter
+    default: 'added'
+  fail_on_error:
+    description: |
+      Exit code for reviewdog when errors are found. Default is `false`.
+    required: false
+    options:
+      - true
+      - false
+    default: 'true'
+  composer_command:
+    description: |
+      Your package script name. `composer run "$composer_command"` will be executed. Default is `phpcs`.
+    required: false
+    default: 'phpcs'
+  workdir:
+    description: "Working directory. Default '.'"
+    required: false
+    default: '.'
+runs:
+  using: 'composite'
+  steps:
+    - run: $GITHUB_ACTION_PATH/entry-point.sh
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{inputs.github_token}}
+        REVIEWDOG_LEVEL: ${{inputs.github_token}}
+        REVIEWDOG_REPORTER: ${{inputs.reporter}}
+        REVIEWDOG_FILTER_MODE: ${{inputs.filter_mode}}
+        REVIEWDOG_FAIL_ON_ERROR: ${{inputs.fail_on_error}}
+        COMPOSER_COMMAND: ${{inputs.composer_command}}
+        WORKDIR: ${{inputs.workdir}}
+branding:
+  icon: 'eye'
+  color: 'red'
